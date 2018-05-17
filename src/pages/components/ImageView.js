@@ -27,7 +27,9 @@ const ImageView = (props) => {
   } = props
   const imageHeight = deviceWidth * height / width
   return (
-    <Modal visible={visible} transparent={true} onRequestClose={closeFun}>
+    <Modal
+      animationType={'fade'}
+      visible={visible} transparent={true} onRequestClose={closeFun}>
       <View
         style={{
           flex: 1,
