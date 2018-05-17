@@ -5,11 +5,11 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "postinstall": "rndebugger-open"
+    "postinstall": "rndebugger-open",
+    "postinstall-devTools": "remotedev-debugger --hostname localhost --port 5678 --injectserver"
   },
   "dependencies": {
     "lodash": "^4.17.10",
-    "d": "^2.5.0",
     "react": "16.3.1",
     "react-native": "0.55.4",
     "react-native-fast-image": "^4.0.14",
