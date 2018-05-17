@@ -8,9 +8,11 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native'
 import ProgressImage from "./ProgressImage"
 import Icon from "./Icon";
+import { doublePress } from "../../utils/common"
 
 const deviceHeight = Dimensions.get('window').height
 
@@ -62,10 +64,14 @@ const ImageView = (props) => {
               justifyContent: 'center',
             }}
           >
-          <ProgressImage
-            source={{ uri: imageUrl }}
-            style={{ width: deviceWidth, height: imageHeight }}
-          />
+            <TouchableWithoutFeedback
+              onPress={doublePress(closeFun)}
+            >
+              <ProgressImage
+                source={{ uri: imageUrl }}
+                style={{ width: deviceWidth, height: imageHeight }}
+              />
+            </TouchableWithoutFeedback>
           </View>
         </ScrollView>
       </View>
