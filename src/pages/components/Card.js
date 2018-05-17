@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import ProgressImage from "./ProgressImage";
 import ImageView from "./ImageView";
 import RootCard from "./RootCard";
+import CardFoot from "./CardFoot";
 
 const deviceWidth = Dimensions.get('window').width
 
@@ -66,7 +67,6 @@ class Card extends Component {
           marginHorizontal: 10,
           marginTop: 10,
           backgroundColor: '#FDFDFD',
-          paddingBottom: 10,
         }}
       >
         <View
@@ -148,6 +148,7 @@ class Card extends Component {
             !_.isEmpty(root) && <RootCard data={root}/>
           }
         </View>
+        <CardFoot good={good} bad={bad} comment_num={comment_num} />
       </View>
     )
   }
