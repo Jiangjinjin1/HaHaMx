@@ -45,3 +45,19 @@ export const replaceReduce = (state, payload, key) => ({
   ...state,
   [key]: payload,
 })
+
+export const doublePress = (onPress?: (arg: any) => any, timeout: number = 300) => {
+  let touchableTime = 0
+  return (...arg: any) => {
+    if ( onPress ) {
+      touchableTime++
+      setTimeout(() => {
+        touchableTime--
+      }, timeout)
+    }
+    if ( touchableTime === 2 ) {
+      return onPress(...arg)
+    }
+    return null
+  }
+}
