@@ -13,11 +13,10 @@ import _ from 'lodash'
 import { connect } from 'react-redux'
 import ProgressImage from "./ProgressImage";
 import ImageView from "./ImageView";
-import RootCard from "./RootCard";
 
 const deviceWidth = Dimensions.get('window').width
 
-class Card extends Component {
+class RootCard extends Component {
   constructor(){
     super()
     this.state = {
@@ -52,11 +51,11 @@ class Card extends Component {
       time, // 发布时间
       topic_content, // 主题
       pic, // 图片对象
-      root, // 原内容
+
     } = this.props.data
     // console.log('this.props.data:', this.props.data)
     const { width = 0, height = 0, path = '', name = '' } = pic || {}
-    const imageWidth = deviceWidth - 40
+    const imageWidth = deviceWidth - 80
     const imageHeight = height * imageWidth / width
     const imageContentHeight = imageHeight > 300 ? 300 : imageHeight
     const imageUrl = `https://image.haha.mx/${path}/big/${name}`
@@ -65,7 +64,7 @@ class Card extends Component {
         style={{
           marginHorizontal: 10,
           marginTop: 10,
-          backgroundColor: '#FDFDFD',
+          backgroundColor: '#F2F2F2',
           paddingBottom: 10,
         }}
       >
@@ -144,9 +143,6 @@ class Card extends Component {
               />
             </View>
           }
-          {
-            !_.isEmpty(root) && <RootCard data={root}/>
-          }
         </View>
       </View>
     )
@@ -161,4 +157,4 @@ const mapActions = (dispatch) => {
   return {}
 }
 
-export default connect(null, mapActions)(Card)
+export default connect(null, mapActions)(RootCard)
