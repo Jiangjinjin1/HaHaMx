@@ -26,8 +26,7 @@ const merge = ({
     }
   })
   return {
-    ...oldData,
-    ...newData,
+    page: push ? _.get(newData, 'page', 1) : _.get(oldData, 'page', 1),
     joke: [...arr]
   }
 }
