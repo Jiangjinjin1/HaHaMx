@@ -25,8 +25,8 @@ const HomeNav = createBottomTabNavigator({
       let suite, iconName;
       switch (routeName) {
         case 'Good':
-          suite = 'MaterialIcons'
-          iconName = 'whatshot'
+          suite = 'MaterialCommunityIcons'
+          iconName = 'fire'
           break
         case 'New':
           suite = 'MaterialIcons'
