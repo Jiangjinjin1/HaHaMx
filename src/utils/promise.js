@@ -11,9 +11,10 @@ export const delay = (interval: number) => (promise: Promise<*>): Promise<*> => 
     })
   })
 )
-export const timeout = (interval: number) => (promise: Promise<*>): Promise<*> => (
-  Promise.race([
+
+export const timeout = (interval: number) => (promise: Promise<*>): Promise<*> => {
+  return Promise.race([
     delay(interval)(Promise.reject(new Error('请求超时，请稍后重试'))),
     promise,
   ])
-)
+}

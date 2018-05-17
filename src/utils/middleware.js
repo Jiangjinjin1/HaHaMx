@@ -40,6 +40,22 @@ function promise({ dispatch }) {
   }
 }
 
+const errorHandler = ({ dispatch }) => {
+  return next => action => {
+    if (action instanceof Error) {
+      const msg = action.message || ''
+      console.log('errorHandler:', msg)
+      return action
+    }
+
+    try {
+      return next(action)
+    } catch (error) {
+      return dispatch(error)
+    }
+  }
+}
+
 const navigationMiddleware = createReactNavigationReduxMiddleware(
   "root",
   state => state.nav,
@@ -48,6 +64,7 @@ const navigationMiddleware = createReactNavigationReduxMiddleware(
 export const addListenerRoot = createReduxBoundAddListener("root");
 
 export default applyMiddleware(
+  errorHandler,
   promise,
   thunkState,
   multiDispatcher,

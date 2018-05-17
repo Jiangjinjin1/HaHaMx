@@ -3,7 +3,7 @@
  */
 import { timeout } from './promise'
 
-export function transformTime(seconds) {
+export const transformTime = (seconds) => {
   let m
   let s
   m = Math.floor(seconds / 60)
@@ -13,19 +13,18 @@ export function transformTime(seconds) {
   return `${m}:${s}`
 }
 
-export async function fetchSystem(url: string, params: Object) {
+export const fetchSystem = async (url: string, params: Object) => {
   let result
-  const response = await timeout(180000)(fetch(url, params)).catch(() => {
+  const response = await timeout(180000)(fetch(url, params))
+    .catch(() => {
       throw new Error('亲，您的网络连接失败，请重新尝试。')
     })
   try {
     result = await response.json()
-    // console.log('result:', result)
     if ( !result ) {
       throw new Error('系统繁忙，请稍后再试。')
     }
   } catch (error) {
-    // console.error(error)
     throw new Error('系统繁忙，请稍后再试。')
   }
   return result || {}
