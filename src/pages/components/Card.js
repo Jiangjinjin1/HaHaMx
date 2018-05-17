@@ -103,16 +103,16 @@ class Card extends Component {
           }
           {
             !_.isEmpty(pic) &&
-            <View
-              style={{
-                height: imageContentHeight,
-                overflow: 'hidden',
-              }}
-            >
+            <View>
               <TouchableWithoutFeedback
                 onPress={() => this.toggleVisible()}
               >
-                <View>
+                <View
+                  style={{
+                    height: imageContentHeight,
+                    overflow: 'hidden',
+                  }}
+                >
                   <ProgressImage
                     style={{ width: imageWidth, height: imageHeight }}
                     source={{ uri: imageUrl }}>
