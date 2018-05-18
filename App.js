@@ -7,12 +7,13 @@
 import React, { Component } from 'react';
 import {
   View,
+  YellowBox,
   StyleSheet,
 } from 'react-native';
 import { Provider } from 'react-redux'
 import createStore from './src/store'
 import AppWithNavigationState from './src/utils/AppNavigator'
-import Loading from "./src/pages/Loading";
+import Loading from "./src/pages/Loading"
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -29,6 +30,7 @@ export default class App extends Component<Props> {
         store,
       })
     })
+    YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated'])
   }
 
   render() {
