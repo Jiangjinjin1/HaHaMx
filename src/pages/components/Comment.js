@@ -67,7 +67,7 @@ class Comment extends Component {
             </View>
             <View>
               <Text>{user_name}</Text>
-              <Text style={{ fontSize: 12 }}>{time}</Text>
+              <Text style={{ fontSize: 12, color: '#666666' }}>{time}</Text>
             </View>
           </View>
           <CustomButton
@@ -87,7 +87,7 @@ class Comment extends Component {
         {
           !_.isEmpty(childElement) && <Comment {...childElement}/>
         }
-        <Text>{replaceBr(content)}</Text>
+        <Text style={{ fontSize: 12, color: '#666666' }}>{replaceBr(content)}</Text>
       </View>
     )
   }
