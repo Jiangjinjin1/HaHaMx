@@ -61,3 +61,5 @@ export const doublePress = (onPress?: (arg: any) => any, timeout: number = 300) 
     return null
   }
 }
+
+export const replaceBr = (content) => content.replace(/<br\s*\/>/g, '\n')
