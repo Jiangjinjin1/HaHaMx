@@ -15,6 +15,7 @@ import ProgressImage from "./ProgressImage";
 import ImageView from "./ImageView";
 import RootCard from "./RootCard";
 import CardFoot from "./CardFoot";
+import { replaceBr } from "../../utils/common";
 
 const deviceWidth = Dimensions.get('window').width
 
@@ -44,6 +45,7 @@ class Card extends Component {
 
   render() {
     const {
+      id,
       bad, // 差
       good, // 赞
       comment_num,  // 评论数
@@ -98,7 +100,7 @@ class Card extends Component {
             <View
               style={{ paddingBottom: 10 }}
             >
-              <Text style={{ fontSize: 16, color: '#666666' }}>{content.replace(/<br\s*\/>/g, '\n')}</Text>
+              <Text style={{ fontSize: 16, color: '#666666' }}>{replaceBr(content)}</Text>
             </View>
           }
           {
@@ -134,14 +136,18 @@ class Card extends Component {
                   }
                 </View>
               </TouchableWithoutFeedback>
-              <ImageView
-                width={width}
-                height={height}
-                imageUrl={imageUrl}
-                deviceWidth={deviceWidth}
-                visible={this.state.visible}
-                closeFun={() => this.closeFun()}
-              />
+              {
+                this.state.visible && <ImageView
+                  jid={id}
+                  width={width}
+                  height={height}
+                  imageUrl={imageUrl}
+                  comment_num={comment_num}
+                  deviceWidth={deviceWidth}
+                  visible={this.state.visible}
+                  closeFun={() => this.closeFun()}
+                />
+              }
             </View>
           }
           {

@@ -17,7 +17,7 @@ const fetchAPI = async (params) => await fetchSystem(HAHAURL, {
 
 const transformBody = (params) => {
   const strArr = []
-  for(let i in params){
+  for (let i in params) {
     strArr.push(`${i}=${params[i]}`)
   }
   return strArr.join('&')
@@ -38,5 +38,24 @@ export const getJokeList = async ({
     drive_info: '6b1158df46aa638698cbf1290db1238875f80000', //设备信息
     page,
     type,
+  }))
+}
+
+export const getCommentList = async ({
+                                       page = 1,
+                                       jid,
+                                       offset = 10,
+                                     }: {
+  page?: number,
+  jid: string,
+  offset?: number,
+}) => {
+  return await fetchAPI(transformBody({
+    r: 'comment_list',
+    offset,
+    drive_info: '6b1158df46aa638698cbf1290db1238875f80000', //设备信息
+    page,
+    jid,
+    order: 'time',
   }))
 }
