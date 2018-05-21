@@ -2,6 +2,7 @@
  * @flow
  */
 import React, { Component } from 'react'
+import { compose } from "redux";
 import { connect } from 'react-redux'
 import { createBottomTabNavigator, createStackNavigator } from "react-navigation"
 import { addListenerRoot } from "./middleware";
@@ -11,6 +12,8 @@ import PicsPage from "../pages/home/PicsPage"
 import TextPage from "../pages/home/TextPage"
 import SettingPage from "../pages/home/SettingPage"
 import Icon from "../pages/components/Icon"
+import { NetInfo } from "react-native";
+import { netInfo } from "../actions/deviceInfoAction";
 
 const HomeNav = createBottomTabNavigator({
   Good: GoodPage,
@@ -93,6 +96,26 @@ export const AppNavigator = createStackNavigator({
 })
 
 class AppWithNavigationState extends Component {
+  constructor(){
+    super()
+  }
+
+  handleFirstConnectivityChange(connectionInfo) {
+    // console.log('First change, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType)
+    this.props.changeNet(connectionInfo)
+  }
+
+  componentDidMount() {
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      // console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+      this.props.changeNet(connectionInfo)
+    })
+    NetInfo.addEventListener(
+      'connectionChange',
+      (connectionInfo) => this.handleFirstConnectivityChange(connectionInfo)
+    )
+  }
+
   render() {
     return (
       <AppNavigator navigation={{
@@ -108,4 +131,10 @@ const mapProps = (state) => ({
   nav: state.nav
 });
 
-export default connect(mapProps)(AppWithNavigationState)
+const mapActions = (dispatch) => {
+  return {
+    changeNet: compose(dispatch, netInfo)
+  }
+}
+
+export default connect(mapProps, mapActions)(AppWithNavigationState)

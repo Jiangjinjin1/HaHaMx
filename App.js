@@ -30,14 +30,14 @@ export default class App extends Component<Props> {
         store,
       })
     })
-    if ( !__DEV__ ) {
+    if (!__DEV__) {
       checkRnUpdate()
     }
     YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated'])
   }
 
   render() {
-    if ( this.state.store === null ) {
+    if (this.state.store === null) {
       return null
     }
     return (
