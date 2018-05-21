@@ -14,6 +14,7 @@ import SettingPage from "../pages/home/SettingPage"
 import Icon from "../pages/components/Icon"
 import { NetInfo } from "react-native";
 import { netInfo } from "../actions/deviceInfoAction";
+import { getWebGoodData } from "../actions/homeAction";
 
 const HomeNav = createBottomTabNavigator({
   Good: GoodPage,
@@ -100,22 +101,6 @@ class AppWithNavigationState extends Component {
     super()
   }
 
-  handleFirstConnectivityChange(connectionInfo) {
-    // console.log('First change, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType)
-    this.props.changeNet(connectionInfo)
-  }
-
-  componentDidMount() {
-    NetInfo.getConnectionInfo().then((connectionInfo) => {
-      // console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-      this.props.changeNet(connectionInfo)
-    })
-    NetInfo.addEventListener(
-      'connectionChange',
-      (connectionInfo) => this.handleFirstConnectivityChange(connectionInfo)
-    )
-  }
-
   render() {
     return (
       <AppNavigator navigation={{
@@ -131,10 +116,4 @@ const mapProps = (state) => ({
   nav: state.nav
 });
 
-const mapActions = (dispatch) => {
-  return {
-    changeNet: compose(dispatch, netInfo)
-  }
-}
-
-export default connect(mapProps, mapActions)(AppWithNavigationState)
+export default connect(mapProps, null)(AppWithNavigationState)

@@ -3,10 +3,11 @@
  */
 import { createStore, compose } from 'redux'
 import devToolsEnhancer from 'remote-redux-devtools'
-import { Platform, AsyncStorage } from 'react-native'
+import { Platform, AsyncStorage, NetInfo } from 'react-native'
 import { persistStore, persistReducer } from 'redux-persist'
 import reducer from './reducers/index'
 import middleware from "./utils/middleware"
+import { netInfo } from "./actions/deviceInfoAction";
 
 export default (onComplete) => {
   const devEnhancer = devToolsEnhancer({
@@ -21,7 +22,7 @@ export default (onComplete) => {
   const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['nav', 'home'],
+    whitelist: ['nav', 'home', 'deviceInfo', 'setting'],
   }
 
   const persistedReducer = persistReducer(persistConfig, reducer)
@@ -34,6 +35,18 @@ export default (onComplete) => {
 
   const storeInit = () => {
     onComplete(store)
+
+    const handleFirstConnectivityChange = (connectionInfo) => {
+      store.dispatch(netInfo(connectionInfo))
+    }
+
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      store.dispatch(netInfo(connectionInfo))
+    })
+    NetInfo.addEventListener(
+      'connectionChange',
+      (connectionInfo) => handleFirstConnectivityChange(connectionInfo)
+    )
   }
 
   persistStore(store, null, storeInit)
