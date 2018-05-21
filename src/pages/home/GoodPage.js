@@ -69,7 +69,7 @@ class GoodPage extends Component {
           renderItem={({ item }) => <Card data={item}/>}
           keyExtractor={(item) => String(item.id)}
           refreshState={this.state.refreshState}
-          initialNumToRender={3}
+          initialNumToRender={1}
           onHeaderRefresh={() => this.onHeaderRefresh()}
           onFooterRefresh={() => this.onFooterRefresh()}
         />

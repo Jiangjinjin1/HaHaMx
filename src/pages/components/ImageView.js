@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { compose } from "redux"
 import { connect } from "react-redux"
-import ProgressImage from "./ProgressImage"
+import ProgressImage, { Progress } from "./ProgressImage"
 import Icon from "./Icon";
 import { doublePress } from "../../utils/common"
 import RightFunButton from "./RightFunButton";
@@ -24,6 +24,9 @@ const deviceHeight = Dimensions.get('window').height
 class ImageView extends Component {
   constructor() {
     super()
+    this.state = {
+      progress: 0,
+    }
   }
 
   componentDidMount() {
@@ -91,6 +94,12 @@ class ImageView extends Component {
                 <ProgressImage
                   source={{ uri: imageUrl }}
                   style={{ width: deviceWidth, height: imageHeight }}
+                  indicator={() => <Progress progress={this.state.progress} showsText/>}
+                  onProgress={e => {
+                    this.setState({
+                      progress: e.nativeEvent.loaded / e.nativeEvent.total
+                    })
+                  }}
                 />
               </TouchableWithoutFeedback>
             </View>

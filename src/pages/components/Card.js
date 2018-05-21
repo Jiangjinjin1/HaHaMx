@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import _ from 'lodash'
 import { connect } from 'react-redux'
-import ProgressImage from "./ProgressImage";
+import ProgressImage, { Progress } from "./ProgressImage";
 import ImageView from "./ImageView";
 import RootCard from "./RootCard";
 import CardFoot from "./CardFoot";
@@ -24,11 +24,13 @@ class Card extends Component {
     super()
     this.state = {
       visible: false,
+      progress: 0,
     }
   }
 
   state: {
     visible: boolean,
+    progress: number,
   }
 
   toggleVisible() {
@@ -117,8 +119,14 @@ class Card extends Component {
                 >
                   <ProgressImage
                     style={{ width: imageWidth, height: imageHeight }}
-                    source={{ uri: imageUrl }}>
-                  </ProgressImage>
+                    source={{ uri: imageUrl }}
+                    indicator={() => <Progress progress={this.state.progress} showsText animated={false}/>}
+                    onProgress={e => {
+                      this.setState({
+                        progress: e.nativeEvent.loaded / e.nativeEvent.total
+                      })
+                    }}
+                  />
                   {
                     imageHeight > 250 &&
                     <View style={{
