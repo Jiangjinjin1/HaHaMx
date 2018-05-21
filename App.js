@@ -33,7 +33,7 @@ export default class App extends Component<Props> {
     if (!__DEV__) {
       checkRnUpdate()
     }
-    YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated'])
+    YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Setting a timer'])
   }
 
   render() {
