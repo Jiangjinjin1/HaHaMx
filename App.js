@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import {
   View,
   YellowBox,
-  StyleSheet,
 } from 'react-native';
 import { Provider } from 'react-redux'
 import createStore from './src/store'
@@ -31,7 +30,9 @@ export default class App extends Component<Props> {
         store,
       })
     })
-    checkRnUpdate()
+    if ( !__DEV__ ) {
+      checkRnUpdate()
+    }
     YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated'])
   }
 
@@ -42,7 +43,7 @@ export default class App extends Component<Props> {
     return (
       <Provider store={this.state.store}>
         <View
-          style={{flex: 1}}
+          style={{ flex: 1 }}
         >
           <AppWithNavigationState/>
           <Loading/>
@@ -51,22 +52,3 @@ export default class App extends Component<Props> {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
