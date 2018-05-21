@@ -8,6 +8,7 @@ import { reset } from '../utils/common'
 import { loadingReducer } from "./loading"
 import { commentReducer } from "./comment"
 import { netInfoReducer } from "./deviceInfo"
+import { settingReduce } from "./setting"
 
 const reducers = {
   nav: navReducer,
@@ -15,6 +16,7 @@ const reducers = {
   loading: loadingReducer,
   comment: reset('reset/comment')(commentReducer),
   deviceInfo: netInfoReducer,
+  setting: settingReduce,
 }
 
 export default combineReducers(reducers)

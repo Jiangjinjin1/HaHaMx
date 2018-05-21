@@ -16,21 +16,24 @@ import ImageView from "./ImageView";
 import RootCard from "./RootCard";
 import CardFoot from "./CardFoot";
 import { replaceBr } from "../../utils/common";
+import { use4G } from "../../actions/settingAction";
 
 const deviceWidth = Dimensions.get('window').width
 
 class Card extends Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state = {
       visible: false,
       progress: 0,
+      loadImg: props.loadImg
     }
   }
 
   state: {
     visible: boolean,
     progress: number,
+    loadImg: boolean,
   }
 
   toggleVisible() {
@@ -59,12 +62,15 @@ class Card extends Component {
       pic, // 图片对象
       root, // 原内容
     } = this.props.data
+    const loadImgState  = this.state.loadImg
+    const loadImgProps = this.props.loadImg
+    const loadImg = loadImgProps ? loadImgProps : loadImgState
     // console.log('this.props.data:', this.props.data)
     const { width = 0, height = 0, path = '', name = '' } = pic || {}
     const imageWidth = deviceWidth - 40
     const imageHeight = height * imageWidth / width
     const imageContentHeight = imageHeight > 300 ? 300 : imageHeight
-    const imageUrl = `https://image.haha.mx/${path}/big/${name}`
+    const imageUrl = loadImg ? `https://image.haha.mx/${path}/big/${name}`: `https://image.haha.mx/${path}/small/${name}`
     return (
       <View
         style={{
@@ -109,7 +115,7 @@ class Card extends Component {
             !_.isEmpty(pic) &&
             <View>
               <TouchableWithoutFeedback
-                onPress={() => this.toggleVisible()}
+                onPress={loadImg ? () => this.toggleVisible(): () => this.setState({loadImg: true})}
               >
                 <View
                   style={{
@@ -169,11 +175,13 @@ class Card extends Component {
 }
 
 const mapProps = (store) => {
-  return {}
+  return {
+    loadImg: use4G(store)
+  }
 }
 
 const mapActions = (dispatch) => {
   return {}
 }
 
-export default connect(null, mapActions)(Card)
+export default connect(mapProps, mapActions)(Card)

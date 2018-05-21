@@ -14,21 +14,24 @@ import { connect } from 'react-redux'
 import ProgressImage, { Progress } from "./ProgressImage";
 import ImageView from "./ImageView";
 import { replaceBr } from "../../utils/common";
+import { use4G } from "../../actions/settingAction";
 
 const deviceWidth = Dimensions.get('window').width
 
 class RootCard extends Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state = {
       visible: false,
       progress: 0,
+      loadImg: props.loadImg
     }
   }
 
   state: {
     visible: boolean,
     progress: number,
+    loadImg: boolean,
   }
 
   toggleVisible() {
@@ -57,12 +60,15 @@ class RootCard extends Component {
       pic, // 图片对象
 
     } = this.props.data
+    const loadImgState  = this.state.loadImg
+    const loadImgProps = this.props.loadImg
+    const loadImg = loadImgProps ? loadImgProps : loadImgState
     // console.log('this.props.data:', this.props.data)
     const { width = 0, height = 0, path = '', name = '' } = pic || {}
     const imageWidth = deviceWidth - 80
     const imageHeight = height * imageWidth / width
     const imageContentHeight = imageHeight > 300 ? 300 : imageHeight
-    const imageUrl = `https://image.haha.mx/${path}/big/${name}`
+    const imageUrl = loadImg ? `https://image.haha.mx/${path}/big/${name}`: `https://image.haha.mx/${path}/small/${name}`
     return (
       <View
         style={{
@@ -108,7 +114,7 @@ class RootCard extends Component {
             !_.isEmpty(pic) &&
             <View>
               <TouchableWithoutFeedback
-                onPress={() => this.toggleVisible()}
+                onPress={loadImg ? () => this.toggleVisible(): () => this.setState({loadImg: true})}
               >
                 <View
                   style={{
@@ -163,11 +169,13 @@ class RootCard extends Component {
 }
 
 const mapProps = (store) => {
-  return {}
+  return {
+    loadImg: use4G(store)
+  }
 }
 
 const mapActions = (dispatch) => {
   return {}
 }
 
-export default connect(null, mapActions)(RootCard)
+export default connect(mapProps, mapActions)(RootCard)

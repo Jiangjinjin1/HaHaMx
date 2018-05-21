@@ -2,7 +2,6 @@
  * @flow
  */
 import React, { Component } from 'react'
-import { compose } from "redux";
 import { connect } from 'react-redux'
 import { createBottomTabNavigator, createStackNavigator } from "react-navigation"
 import { addListenerRoot } from "./middleware";
@@ -12,9 +11,6 @@ import PicsPage from "../pages/home/PicsPage"
 import TextPage from "../pages/home/TextPage"
 import SettingPage from "../pages/home/SettingPage"
 import Icon from "../pages/components/Icon"
-import { NetInfo } from "react-native";
-import { netInfo } from "../actions/deviceInfoAction";
-import { getWebGoodData } from "../actions/homeAction";
 
 const HomeNav = createBottomTabNavigator({
   Good: GoodPage,
@@ -82,6 +78,9 @@ export const AppNavigator = createStackNavigator({
           break
         case 'Text':
           title = '段子'
+          break
+        case 'Setting':
+          title = '设置'
           break
         default:
           title = '首页'
