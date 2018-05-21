@@ -30,7 +30,9 @@ export const getCurrentComment = ({
       ..._.get(result, 'comments', [])
     ]
   }
-  if(!_.isEmpty(result) && _.get(result, 'comments', []).length === 0){
+  if(!_.isEmpty(result) &&
+    (_.get(result, 'comments', []).length === 0 ||
+      _.get(result, 'comments', []).length <= 10)){
     return currentComment({
       ...mergeData,
     })
