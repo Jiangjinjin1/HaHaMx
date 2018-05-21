@@ -7,7 +7,7 @@ import {
   Text,
 } from 'react-native'
 import _ from 'lodash'
-import ProgressImage from "./ProgressImage"
+import ProgressImage, { Progress } from "./ProgressImage"
 import CustomButton from "./CustomButton";
 import Icon from "./Icon";
 import { replaceBr } from "../../utils/common";
@@ -29,13 +29,16 @@ class Comment extends Component {
     } = this.props
     return (
       <View
-        style={{
+        style={[{
           padding: 5,
-          borderWidth: 1,
-          borderColor: 'black',
           marginBottom: 5,
           marginHorizontal: 5,
-        }}
+          borderColor: '#D0D1D2',
+        }, user_pic ? {
+          borderBottomWidth: 1,
+        }: {
+          borderWidth: 1,
+        }]}
       >
         <View
           style={{
@@ -59,6 +62,7 @@ class Comment extends Component {
                 user_pic && <ProgressImage
                   source={{ uri: user_pic }}
                   style={{ width: 30, height: 30, borderRadius: 15 }}
+                  indicator={Progress}
                 />
               }
               {

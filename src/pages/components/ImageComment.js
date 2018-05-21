@@ -90,7 +90,9 @@ export default class ImageComment extends Component {
               alignItems: 'center',
               justifyContent: 'center',
               position: 'relative',
-              height: 30
+              height: 40,
+              borderBottomWidth: 1,
+              borderBottomColor: '#DADADA',
             }}
           >
             <Text>{count === 0 ? `暂无评论` : `${count}条评论`}</Text>
@@ -99,7 +101,7 @@ export default class ImageComment extends Component {
               style={{
                 position: 'absolute',
                 right: 20,
-                top: 3,
+                top: 8,
               }}
             >
               <Icon
