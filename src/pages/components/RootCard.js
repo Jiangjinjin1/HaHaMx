@@ -119,7 +119,7 @@ class RootCard extends Component {
                   <ProgressImage
                     style={{ width: imageWidth, height: imageHeight }}
                     source={{ uri: imageUrl }}
-                    indicator={() => <Progress progress={this.state.progress} showsText/>}
+                    indicator={() => <Progress progress={this.state.progress} showsText animated={false}/>}
                     onProgress={e => {
                       this.setState({
                         progress: e.nativeEvent.loaded / e.nativeEvent.total
