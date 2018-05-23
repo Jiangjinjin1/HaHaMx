@@ -4,6 +4,7 @@
 import _ from 'lodash'
 import { createAction } from 'redux-act'
 import { getJokeList } from "../api/api"
+import { RefreshState } from "react-native-refresh-list-view";
 
 const merge = ({
                  oldData,
@@ -19,7 +20,7 @@ const merge = ({
   const arr = [...oldJoke]
   !_.isEmpty(newJoke) && _.forEach(newJoke, (item2, index2) => {
     const findIndex = _.findIndex(oldJoke, { id: item2.id })
-    if ( findIndex > -1 ) {
+    if (findIndex > -1) {
       arr.splice(findIndex, 1, item2)
     } else {
       push ? arr.push(item2) : arr.unshift(item2)
@@ -48,7 +49,11 @@ export const getWebGoodData = ({
     type: 'web_good',
     page: page ? page : Number(currentPage) + 1,
   })
-  callback && callback()
+  if (_.get(result, 'joke', []).length === 0) {
+    callback && callback(RefreshState.NoMoreData)
+    return []
+  }
+  callback && callback(RefreshState.Idle)
   return webGoodData({
     ...merge({
       oldData: data,
@@ -75,7 +80,11 @@ export const getNewData = ({
     type: 'new',
     page: page ? page : Number(currentPage) + 1,
   })
-  callback && callback()
+  if (_.get(result, 'joke', []).length === 0) {
+    callback && callback(RefreshState.NoMoreData)
+    return []
+  }
+  callback && callback(RefreshState.Idle)
   return newData({
     ...merge({
       oldData: data,
@@ -102,7 +111,11 @@ export const getPicData = ({
     type: 'pic',
     page: page ? page : Number(currentPage) + 1,
   })
-  callback && callback()
+  if (_.get(result, 'joke', []).length === 0) {
+    callback && callback(RefreshState.NoMoreData)
+    return []
+  }
+  callback && callback(RefreshState.Idle)
   return picData({
     ...merge({
       oldData: data,
@@ -129,7 +142,11 @@ export const getTextData = ({
     type: 'text',
     page: page ? page : Number(currentPage) + 1,
   })
-  callback && callback()
+  if (_.get(result, 'joke', []).length === 0) {
+    callback && callback(RefreshState.NoMoreData)
+    return []
+  }
+  callback && callback(RefreshState.Idle)
   return textData({
     ...merge({
       oldData: data,
