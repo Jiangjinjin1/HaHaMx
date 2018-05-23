@@ -155,7 +155,7 @@ class Card extends Component {
             </View>
           }
           {
-            !_.isEmpty(root) && <Card data={root} children/>
+            !_.isEmpty(root) && <Card data={root} children loadImg={loadImg}/>
           }
         </View>
         {
