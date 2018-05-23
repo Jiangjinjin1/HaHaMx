@@ -14,6 +14,7 @@ import createStore from './src/store'
 import AppWithNavigationState from './src/utils/AppNavigator'
 import Loading from "./src/pages/Loading"
 import { checkRnUpdate } from "./src/utils/update"
+import ImageView from "./src/pages/components/ImageView"
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -47,6 +48,7 @@ export default class App extends Component<Props> {
         >
           <AppWithNavigationState/>
           <Loading/>
+          <ImageView />
         </View>
       </Provider>
     );

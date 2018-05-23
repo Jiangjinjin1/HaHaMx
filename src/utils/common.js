@@ -21,7 +21,7 @@ export const fetchSystem = async (url: string, params: Object) => {
     })
   try {
     result = await response.json()
-    if ( !result ) {
+    if (!result) {
       throw new Error('系统繁忙，请稍后再试。')
     }
   } catch (error) {
@@ -35,7 +35,7 @@ export type ResetableReducer = Reducer<Object, { type: string }>
 
 export const reset = (actionType: string, defaultValue: Object = {}) =>
   (reducer: ResetableReducer): ResetableReducer => (state, action) => {
-    if ( action.type === actionType ) {
+    if (action.type === actionType) {
       return reducer(defaultValue, action)
     }
     return reducer(state, action)
@@ -49,13 +49,13 @@ export const replaceReduce = (state, payload, key) => ({
 export const doublePress = (onPress?: (arg: any) => any, timeout: number = 300) => {
   let touchableTime = 0
   return (...arg: any) => {
-    if ( onPress ) {
+    if (onPress) {
       touchableTime++
       setTimeout(() => {
         touchableTime--
       }, timeout)
     }
-    if ( touchableTime === 2 ) {
+    if (touchableTime === 2) {
       return onPress(...arg)
     }
     return null
@@ -63,3 +63,9 @@ export const doublePress = (onPress?: (arg: any) => any, timeout: number = 300) 
 }
 
 export const replaceBr = (content) => content.replace(/<br\s*\/>/g, '\n')
+
+export const getImageUrl = ({
+                           loadImg,
+                           path,
+                           name,
+                         }) => loadImg ? `https://image.haha.mx/${path}/big/${name}` : `https://image.haha.mx/${path}/small/${name}`

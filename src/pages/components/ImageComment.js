@@ -5,17 +5,16 @@ import React, { Component } from 'react'
 import {
   Text,
   View,
-  FlatList,
   Animated,
   Dimensions,
-  ScrollView,
   TouchableOpacity,
   DeviceEventEmitter,
 } from 'react-native'
 import _ from 'lodash'
-import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
-import Icon from "./Icon";
-import Comment from "./Comment";
+import uuid from 'react-native-uuid'
+import RefreshListView, { RefreshState } from "react-native-refresh-list-view"
+import Icon from "./Icon"
+import Comment from "./Comment"
 
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -39,7 +38,7 @@ export default class ImageComment extends Component {
   }
 
   componentWillUnmount() {
-    if ( this.msgListener ) {
+    if (this.msgListener) {
       this.msgListener.remove()
     }
   }
@@ -113,37 +112,36 @@ export default class ImageComment extends Component {
             </TouchableOpacity>
           </View>
           <View style={{ overflow: 'hidden' }}>
-            <ScrollView>
-              {
-                _.map(comments, (item) => {
-                  const newArr = []
-                  let newObj = {}
-                  let floor = 1
-                  _.forEachRight(item, (itemKey, index) => {
-                    if ( index === item.length - 1 ) {
-                      newObj = {
-                        ...itemKey,
-                        floor: floor++,
-                      }
+            <RefreshListView
+              data={comments}
+              renderItem={({ item }) => {
+                const newArr = []
+                let newObj = {}
+                let floor = 1
+                _.forEachRight(item, (itemKey, index) => {
+                  if (index === item.length - 1) {
+                    newObj = {
+                      ...itemKey,
+                      floor: floor++,
                     }
-                    if ( index > 0 ) {
-                      newObj = {
-                        ...item[index - 1],
-                        floor: floor++,
-                        childElement: { ...newObj },
-                      }
+                  }
+                  if (index > 0) {
+                    newObj = {
+                      ...item[index - 1],
+                      floor: floor++,
+                      childElement: { ...newObj },
                     }
-                  })
-                  newArr.push(newObj)
-                  return _.map(newArr, (obj, key) => <Comment {...obj} key={item[0].id}/>)
+                  }
                 })
-              }
-              <View
-                style={{
-                  height: 60,
-                }}
-              >{}</View>
-            </ScrollView>
+                newArr.push(newObj)
+                return _.map(newArr, (obj) => <Comment {...obj} key={uuid.v4()}/>)
+              }}
+              keyExtractor={() => uuid.v4()}
+              initialNumToRender={10}
+              style={{
+                height: deviceHeight * 0.6 - 50
+              }}
+            />
           </View>
         </View>
       </Animated.View>

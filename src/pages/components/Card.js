@@ -7,45 +7,31 @@ import {
   Text,
   Image,
   Dimensions,
+  DeviceEventEmitter,
   TouchableWithoutFeedback,
 } from 'react-native'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import ProgressImage, { Progress } from "./ProgressImage";
 import ImageView from "./ImageView";
-import RootCard from "./RootCard";
 import CardFoot from "./CardFoot";
-import { replaceBr } from "../../utils/common";
+import { getImageUrl, replaceBr } from "../../utils/common";
 import { use4G } from "../../actions/settingAction";
 
 const deviceWidth = Dimensions.get('window').width
 
 class Card extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      visible: false,
       progress: 0,
       loadImg: props.loadImg
     }
   }
 
   state: {
-    visible: boolean,
     progress: number,
     loadImg: boolean,
-  }
-
-  toggleVisible() {
-    this.setState({
-      visible: true,
-    })
-  }
-
-  closeFun() {
-    this.setState({
-      visible: false,
-    })
   }
 
   render() {
@@ -62,22 +48,27 @@ class Card extends Component {
       pic, // 图片对象
       root, // 原内容
     } = this.props.data
-    const loadImgState  = this.state.loadImg
+    const { children = false } = this.props
+    const loadImgState = this.state.loadImg
     const loadImgProps = this.props.loadImg
     const loadImg = loadImgProps ? loadImgProps : loadImgState
-    // console.log('this.props.data:', this.props.data)
     const { width = 0, height = 0, path = '', name = '' } = pic || {}
-    const imageWidth = deviceWidth - 40
+    const countWidth = !children ? 40 : 80
+    const imageWidth = deviceWidth - countWidth
     const imageHeight = height * imageWidth / width
     const imageContentHeight = imageHeight > 300 ? 300 : imageHeight
-    const imageUrl = loadImg ? `https://image.haha.mx/${path}/big/${name}`: `https://image.haha.mx/${path}/small/${name}`
+    const imageUrl = getImageUrl({ loadImg, path, name })
     return (
       <View
-        style={{
+        style={[{
           marginHorizontal: 10,
           marginTop: 10,
+        }, !children ? {
           backgroundColor: '#FDFDFD',
-        }}
+        } : {
+          backgroundColor: '#F2F2F2',
+          paddingBottom: 10,
+        }]}
       >
         <View
           style={{
@@ -115,7 +106,17 @@ class Card extends Component {
             !_.isEmpty(pic) &&
             <View>
               <TouchableWithoutFeedback
-                onPress={loadImg ? () => this.toggleVisible(): () => this.setState({loadImg: true})}
+                onPress={loadImg ? () => {
+                  DeviceEventEmitter.emit('ImageView', {
+                    jid: id,
+                    width,
+                    height,
+                    imageUrl,
+                    comment_num,
+                    deviceWidth,
+                    visible: true,
+                  })
+                } : () => this.setState({ loadImg: true })}
               >
                 <View
                   style={{
@@ -126,7 +127,8 @@ class Card extends Component {
                   <ProgressImage
                     style={{ width: imageWidth, height: imageHeight }}
                     source={{ uri: imageUrl }}
-                    indicator={() => <Progress progress={this.state.progress} showsText animated={false}/>}
+                    indicator={() => <Progress progress={this.state.progress} showsText
+                                               animated={false}/>}
                     onProgress={e => {
                       this.setState({
                         progress: e.nativeEvent.loaded / e.nativeEvent.total
@@ -142,7 +144,7 @@ class Card extends Component {
                       justifyContent: 'center',
                       position: 'absolute',
                       height: 30,
-                      top: imageHeight > 300 ? 270: imageHeight - 30,
+                      top: imageHeight > 300 ? 270 : imageHeight - 30,
                       width: imageWidth,
                     }}>
                       <Text style={{ color: 'white' }}>点击查看全图</Text>
@@ -150,25 +152,15 @@ class Card extends Component {
                   }
                 </View>
               </TouchableWithoutFeedback>
-              {
-                this.state.visible && <ImageView
-                  jid={id}
-                  width={width}
-                  height={height}
-                  imageUrl={imageUrl}
-                  comment_num={comment_num}
-                  deviceWidth={deviceWidth}
-                  visible={this.state.visible}
-                  closeFun={() => this.closeFun()}
-                />
-              }
             </View>
           }
           {
-            !_.isEmpty(root) && <RootCard data={root}/>
+            !_.isEmpty(root) && <Card data={root} children/>
           }
         </View>
-        <CardFoot good={good} bad={bad} comment_num={comment_num} />
+        {
+          !children && <CardFoot good={good} bad={bad} comment_num={comment_num}/>
+        }
       </View>
     )
   }

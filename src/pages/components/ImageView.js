@@ -3,11 +3,11 @@
  */
 import React, { Component } from 'react'
 import {
-  Modal,
   View,
   ScrollView,
   Dimensions,
   TouchableOpacity,
+  DeviceEventEmitter,
   TouchableWithoutFeedback,
 } from 'react-native'
 import { compose } from "redux"
@@ -21,37 +21,72 @@ import { getCurrentComment } from "../../actions/commentAction"
 
 const deviceHeight = Dimensions.get('window').height
 
-class ImageView extends Component {
+class OverlayT extends Component {
   constructor() {
     super()
     this.state = {
+      jid: 0,
+      comment_num: 0,
       progress: 0,
+      imageUrl: '',
+      visible: false,
+      width: 0,
+      height: 0,
+      deviceWidth: 0,
+      currentComment: {},
     }
   }
 
+  closeImageView(){
+    DeviceEventEmitter.emit('ImageView',{
+      visible: false,
+    })
+  }
+
   componentDidMount() {
-    this.props.getCurrentComment({ jid: this.props.jid, comment_num: this.props.comment_num })
+    this.msgListener = DeviceEventEmitter.addListener('ImageView', (state) => {
+      this.setState({
+        ...state,
+      })
+      if (state.jid && state.comment_num) {
+        this.props.getCurrentComment({ jid: state.jid, comment_num: state.comment_num })
+      }
+    })
   }
 
   componentWillUnmount() {
     this.props.resetComment()
+    if (this.msgListener) {
+      this.msgListener.remove()
+    }
   }
 
   render() {
     const {
       imageUrl,
       visible = false,
-      closeFun,
       width,
       height,
       deviceWidth,
-      currentComment,
-    } = this.props
+    } = this.state
+    const { currentComment } = this.props
     const imageHeight = deviceWidth * height / width
+    if (!visible) return null
     return (
-      <Modal
-        animationType={'fade'}
-        visible={visible} transparent={true} onRequestClose={closeFun}>
+      <View
+        style={{
+          zIndex: 999,
+          backgroundColor: 'rgba(64, 64, 64, 0.5)',
+          width: deviceWidth,
+          height: deviceHeight,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
+          elevation: 5,
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -60,7 +95,7 @@ class ImageView extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={closeFun}
+            onPress={this.closeImageView}
             style={{
               position: 'absolute',
               top: 90,
@@ -89,12 +124,13 @@ class ImageView extends Component {
               }}
             >
               <TouchableWithoutFeedback
-                onPress={doublePress(closeFun)}
+                onPress={doublePress(this.closeImageView)}
               >
                 <ProgressImage
                   source={{ uri: imageUrl }}
                   style={{ width: deviceWidth, height: imageHeight }}
-                  indicator={() => <Progress progress={this.state.progress} showsText/>}
+                  indicator={() => <Progress progress={this.state.progress} showsText
+                                             animated={false}/>}
                   onProgress={e => {
                     this.setState({
                       progress: e.nativeEvent.loaded / e.nativeEvent.total
@@ -107,7 +143,7 @@ class ImageView extends Component {
           <ImageComment data={currentComment}/>
           <RightFunButton/>
         </View>
-      </Modal>
+      </View>
     )
   }
 }
@@ -126,4 +162,4 @@ const mapActions = (dispatch) => {
   }
 }
 
-export default connect(mapProps, mapActions)(ImageView)
+export default connect(mapProps, mapActions)(OverlayT)

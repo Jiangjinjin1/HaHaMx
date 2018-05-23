@@ -30,6 +30,9 @@ class GoodPage extends Component {
   }
 
   onHeaderRefresh() {
+    this.setState({
+      refreshState: RefreshState.HeaderRefreshing
+    })
     this.props.getJokeData({
       page: 1,
       pullOrPush: 'pull',
@@ -42,6 +45,9 @@ class GoodPage extends Component {
   }
 
   onFooterRefresh() {
+    this.setState({
+      refreshState: RefreshState.FooterRefreshing
+    })
     this.props.getJokeData({
       callback: () => {
         this.setState({
