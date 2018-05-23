@@ -62,6 +62,20 @@ export const doublePress = (onPress?: (arg: any) => any, timeout: number = 300) 
   }
 }
 
+export const normalPress = (onPress?: (arg: any) => any, timeout: number = 500) => {
+  let touchable = true
+  return (...arg: any) => {
+    if (touchable && onPress) {
+      touchable = false
+      setTimeout(() => {
+        touchable = true
+      }, timeout)
+      return onPress(...arg)
+    }
+    return null
+  }
+}
+
 export const replaceBr = (content) => content.replace(/<br\s*\/>/g, '\n')
 
 export const getImageUrl = ({
