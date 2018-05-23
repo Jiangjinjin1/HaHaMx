@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
 import { getWebGoodData } from "../../actions/homeAction";
 import Card from "../components/Card";
+import { normalPress } from "../../utils/common";
 
 class GoodPage extends Component {
   constructor() {
@@ -36,9 +37,9 @@ class GoodPage extends Component {
     this.props.getJokeData({
       page: 1,
       pullOrPush: 'pull',
-      callback: () => {
+      callback: (refreshState) => {
         this.setState({
-          refreshState: RefreshState.Idle
+          refreshState,
         })
       }
     })
@@ -49,9 +50,9 @@ class GoodPage extends Component {
       refreshState: RefreshState.FooterRefreshing
     })
     this.props.getJokeData({
-      callback: () => {
+      callback: (refreshState) => {
         this.setState({
-          refreshState: RefreshState.Idle
+          refreshState,
         })
       }
     })
@@ -97,7 +98,7 @@ const mapProps = (store) => {
 
 const mapActions = (dispatch) => {
   return {
-    getJokeData: compose(dispatch, getWebGoodData)
+    getJokeData: compose(dispatch, normalPress(getWebGoodData))
   }
 }
 

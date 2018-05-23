@@ -12,6 +12,7 @@ import { connect } from "react-redux"
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view"
 import { getTextData } from "../../actions/homeAction"
 import Card from "../components/Card";
+import { normalPress } from "../../utils/common";
 
 class TextPage extends Component {
   constructor() {
@@ -31,22 +32,28 @@ class TextPage extends Component {
 
 
   onHeaderRefresh() {
+    this.setState({
+      refreshState: RefreshState.HeaderRefreshing
+    })
     this.props.getTextData({
       page: 1,
       pullOrPush: 'pull',
-      callback: () => {
+      callback: (refreshState) => {
         this.setState({
-          refreshState: RefreshState.Idle
+          refreshState,
         })
       }
     })
   }
 
   onFooterRefresh() {
+    this.setState({
+      refreshState: RefreshState.FooterRefreshing
+    })
     this.props.getTextData({
-      callback: () => {
+      callback: (refreshState) => {
         this.setState({
-          refreshState: RefreshState.Idle
+          refreshState,
         })
       }
     })
@@ -92,7 +99,7 @@ const mapProps = (store) => {
 
 const mapActions = (dispatch) => {
   return {
-    getTextData: compose(dispatch, getTextData)
+    getTextData: compose(dispatch, normalPress(getTextData))
   }
 }
 
