@@ -21,7 +21,7 @@ import { getCurrentComment } from "../../actions/commentAction"
 
 const deviceHeight = Dimensions.get('window').height
 
-class OverlayT extends Component {
+class ImageView extends Component {
   constructor() {
     super()
     this.state = {
@@ -41,6 +41,7 @@ class OverlayT extends Component {
     DeviceEventEmitter.emit('ImageView',{
       visible: false,
     })
+    this.props.resetComment()
   }
 
   componentDidMount() {
@@ -48,14 +49,13 @@ class OverlayT extends Component {
       this.setState({
         ...state,
       })
-      if (state.jid && state.comment_num) {
-        this.props.getCurrentComment({ jid: state.jid, comment_num: state.comment_num })
+      if (state.jid) {
+        this.props.getCurrentComment({ jid: state.jid })
       }
     })
   }
 
   componentWillUnmount() {
-    this.props.resetComment()
     if (this.msgListener) {
       this.msgListener.remove()
     }
@@ -69,7 +69,6 @@ class OverlayT extends Component {
       height,
       deviceWidth,
     } = this.state
-    const { currentComment } = this.props
     const imageHeight = deviceWidth * height / width
     if (!visible) return null
     return (
@@ -95,7 +94,7 @@ class OverlayT extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={this.closeImageView}
+            onPress={() => this.closeImageView()}
             style={{
               position: 'absolute',
               top: 90,
@@ -124,7 +123,7 @@ class OverlayT extends Component {
               }}
             >
               <TouchableWithoutFeedback
-                onPress={doublePress(this.closeImageView)}
+                onPress={doublePress(() => this.closeImageView())}
               >
                 <ProgressImage
                   source={{ uri: imageUrl }}
@@ -140,7 +139,7 @@ class OverlayT extends Component {
               </TouchableWithoutFeedback>
             </View>
           </ScrollView>
-          <ImageComment data={currentComment}/>
+          <ImageComment />
           <RightFunButton/>
         </View>
       </View>
@@ -149,9 +148,8 @@ class OverlayT extends Component {
 }
 
 const mapProps = (store) => {
-  const { comment: { currentComment = {} } } = store
   return {
-    currentComment,
+
   }
 }
 
@@ -162,4 +160,4 @@ const mapActions = (dispatch) => {
   }
 }
 
-export default connect(mapProps, mapActions)(OverlayT)
+export default connect(null, mapActions)(ImageView)

@@ -12,14 +12,17 @@ import {
 } from 'react-native'
 import _ from 'lodash'
 import uuid from 'react-native-uuid'
+import { compose } from "redux"
+import { connect } from "react-redux"
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view"
 import Icon from "./Icon"
 import Comment from "./Comment"
+import { getCurrentComment } from "../../actions/commentAction";
 
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
-export default class ImageComment extends Component {
+class ImageComment extends Component {
   constructor() {
     super()
     this.state = {
@@ -51,15 +54,30 @@ export default class ImageComment extends Component {
   }
 
   onHeaderRefresh() {
-
+    this.setState({
+      refreshState: RefreshState.HeaderRefreshing
+    })
+    const { currentComment: { jid } } = this.props
+    this.props.getCurrentComment({ jid, page: 1 })
   }
 
   onFooterRefresh() {
-
+    this.setState({
+      refreshState: RefreshState.FooterRefreshing
+    })
+    const { currentComment: { page, jid } } = this.props
+    this.props.getCurrentComment({
+      jid, page: page + 1,
+      callback: (refreshState) => {
+        this.setState({
+          refreshState,
+        })
+      }
+    })
   }
 
   render() {
-    const { data: { comments = [], count = 0 } } = this.props
+    const { currentComment: { comments = [], count = 0 } } = this.props
     return (
       <Animated.View
         style={{
@@ -141,6 +159,9 @@ export default class ImageComment extends Component {
               style={{
                 height: deviceHeight * 0.6 - 50
               }}
+              refreshState={this.state.refreshState}
+              onHeaderRefresh={() => this.onHeaderRefresh()}
+              onFooterRefresh={() => this.onFooterRefresh()}
             />
           </View>
         </View>
@@ -148,3 +169,20 @@ export default class ImageComment extends Component {
     )
   }
 }
+
+const mapProps = (store) => {
+  const {
+    comment: { currentComment = {} },
+  } = store
+  return {
+    currentComment,
+  }
+}
+
+const mapActions = (dispatch) => {
+  return {
+    getCurrentComment: compose(dispatch, getCurrentComment),
+  }
+}
+
+export default connect(mapProps, mapActions)(ImageComment)

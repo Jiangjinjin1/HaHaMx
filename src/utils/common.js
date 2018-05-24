@@ -72,7 +72,7 @@ export const normalPress = (onPress?: (arg: any) => any, timeout: number = 500) 
       }, timeout)
       return onPress(...arg)
     }
-    return null
+    return []
   }
 }
 

@@ -43,6 +43,7 @@ function promise({ dispatch }) {
 const errorHandler = ({ dispatch }) => {
   return next => action => {
     if (action instanceof Error) {
+      console.log('action:', action)
       const msg = action.message || ''
       console.log('errorHandler:', msg)
       return action
