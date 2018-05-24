@@ -15,6 +15,7 @@ import AppWithNavigationState from './src/utils/AppNavigator'
 import Loading from "./src/pages/Loading"
 import { checkRnUpdate } from "./src/utils/update"
 import ImageView from "./src/pages/components/ImageView"
+import ImageComment from "./src/pages/components/ImageComment";
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -48,7 +49,8 @@ export default class App extends Component<Props> {
         >
           <AppWithNavigationState/>
           <Loading/>
-          <ImageView />
+          <ImageView  style={{position: 'absolute', zIndex: 99}}/>
+          <ImageComment style={{position: 'absolute', zIndex: 999}}/>
         </View>
       </Provider>
     );
