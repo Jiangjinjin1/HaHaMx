@@ -27,7 +27,9 @@ class GoodPage extends Component {
   }
 
   componentDidMount() {
-    this.props.getJokeData({})
+    this.props.getJokeData({
+      page: 1,
+    })
   }
 
   onHeaderRefresh() {

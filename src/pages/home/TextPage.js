@@ -27,7 +27,9 @@ class TextPage extends Component {
   }
 
   componentDidMount() {
-    this.props.getTextData({})
+    this.props.getTextData({
+      page: 1,
+    })
   }
 
 

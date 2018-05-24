@@ -27,7 +27,9 @@ class PicsPage extends Component {
   }
 
   componentDidMount() {
-    this.props.getPicsData({})
+    this.props.getPicsData({
+      page: 1,
+    })
   }
 
 

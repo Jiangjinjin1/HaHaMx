@@ -27,7 +27,9 @@ class NewPage extends Component {
   }
 
   componentDidMount() {
-    this.props.getNewData({})
+    this.props.getNewData({
+      page: 1,
+    })
   }
 
   onHeaderRefresh() {
