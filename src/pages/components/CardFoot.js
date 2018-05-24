@@ -66,6 +66,7 @@ const CardFoot = (props) => {
         }}
         onPress={() => DeviceEventEmitter.emit('toggleComment', {
           jid,
+          comment_num,
         })}
       />
     </View>
