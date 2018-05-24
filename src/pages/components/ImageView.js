@@ -74,7 +74,7 @@ class ImageView extends Component {
     return (
       <View
         style={{
-          zIndex: 999,
+          zIndex: 99,
           backgroundColor: 'rgba(64, 64, 64, 0.5)',
           width: deviceWidth,
           height: deviceHeight,
@@ -102,7 +102,7 @@ class ImageView extends Component {
               width: 30,
               height: 30,
               borderRadius: 15,
-              zIndex: 999,
+              zIndex: 99,
               opacity: 0.5,
               justifyContent: 'center',
               alignItems: 'center',
@@ -139,7 +139,6 @@ class ImageView extends Component {
               </TouchableWithoutFeedback>
             </View>
           </ScrollView>
-          <ImageComment />
           <RightFunButton/>
         </View>
       </View>

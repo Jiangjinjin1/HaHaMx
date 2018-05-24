@@ -35,8 +35,14 @@ class ImageComment extends Component {
   animation: any
 
   componentDidMount() {
-    this.msgListener = DeviceEventEmitter.addListener('toggleComment', () => {
+    this.msgListener = DeviceEventEmitter.addListener('toggleComment', (state) => {
       this.toggleComment()
+      this.setState({
+        ...state,
+      })
+      if (state.jid) {
+        this.props.getCurrentComment({ jid: state.jid })
+      }
     })
   }
 
@@ -78,6 +84,8 @@ class ImageComment extends Component {
 
   render() {
     const { currentComment: { comments = [], count = 0 } } = this.props
+    const { displayComment } = this.state
+    if (!displayComment) return null
     return (
       <Animated.View
         style={{
@@ -96,7 +104,7 @@ class ImageComment extends Component {
             outputRange: [0, -(deviceHeight * 0.4)],
           }),
           position: 'absolute',
-          zIndex: 99,
+          zIndex: 999,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
         }}

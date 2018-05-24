@@ -20,7 +20,7 @@ const RightFunButton = (props) => {
       }}
     >
       <TouchableOpacity
-        onPress={() => DeviceEventEmitter.emit('toggleComment', true)}
+        onPress={() => DeviceEventEmitter.emit('toggleComment', {})}
       >
         <Icon
           suite={'FontAwesome'}

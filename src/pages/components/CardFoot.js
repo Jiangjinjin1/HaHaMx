@@ -3,13 +3,14 @@
  */
 import React from 'react'
 import {
+  DeviceEventEmitter,
   View,
 } from 'react-native'
 import CustomButton from "./CustomButton";
 import Icon from "./Icon";
 
 const CardFoot = (props) => {
-  const { good = '', bad = '', comment_num = '' } = props
+  const { good = '', bad = '', comment_num = '', jid = '' } = props
   return (
     <View
       style={{
@@ -63,6 +64,9 @@ const CardFoot = (props) => {
           flexDirection: 'row',
           alignItems: 'center',
         }}
+        onPress={() => DeviceEventEmitter.emit('toggleComment', {
+          jid,
+        })}
       />
     </View>
   )

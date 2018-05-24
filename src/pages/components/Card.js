@@ -159,7 +159,7 @@ class Card extends Component {
           }
         </View>
         {
-          !children && <CardFoot good={good} bad={bad} comment_num={comment_num}/>
+          !children && <CardFoot good={good} bad={bad} comment_num={comment_num} jid={id}/>
         }
       </View>
     )
