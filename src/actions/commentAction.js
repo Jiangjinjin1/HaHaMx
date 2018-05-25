@@ -6,7 +6,7 @@ import { createAction } from 'redux-act'
 import { getCommentList } from "../api/api";
 import { RefreshState } from "react-native-refresh-list-view";
 
-export const currentComment = createAction('current comment Data')
+export const currentComment = createAction('current comment Data', arg => arg, arg => 'currentComment')
 
 export const getCurrentComment = ({
                                     jid,

@@ -32,7 +32,7 @@ const merge = ({
   }
 }
 
-export const webGoodData = createAction('get Web Good Data')
+export const webGoodData = createAction('get Web Good Data', arg => arg, arg => ('webGoodData'))
 
 export const getWebGoodData = ({
                                  page,

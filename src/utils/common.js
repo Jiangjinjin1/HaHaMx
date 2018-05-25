@@ -41,10 +41,19 @@ export const reset = (actionType: string, defaultValue: Object = {}) =>
     return reducer(state, action)
   }
 
-export const replaceReduce = (state, payload, key) => ({
-  ...state,
-  [key]: payload,
-})
+export const replaceReduce = (state, payload, key) => {
+  if (key) {
+    return {
+      ...state,
+      [key]: payload,
+    }
+  } else {
+    return {
+      ...state,
+      ...payload,
+    }
+  }
+}
 
 export const doublePress = (onPress?: (arg: any) => any, timeout: number = 300) => {
   let touchableTime = 0
@@ -79,7 +88,7 @@ export const normalPress = (onPress?: (arg: any) => any, timeout: number = 500) 
 export const replaceBr = (content) => content.replace(/<br\s*\/>/g, '\n')
 
 export const getImageUrl = ({
-                           loadImg,
-                           path,
-                           name,
-                         }) => loadImg ? `https://image.haha.mx/${path}/big/${name}` : `https://image.haha.mx/${path}/small/${name}`
+                              loadImg,
+                              path,
+                              name,
+                            }) => loadImg ? `https://image.haha.mx/${path}/big/${name}` : `https://image.haha.mx/${path}/small/${name}`

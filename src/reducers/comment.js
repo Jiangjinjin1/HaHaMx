@@ -7,7 +7,7 @@ import { replaceReduce } from "../utils/common"
 import { currentComment } from "../actions/commentAction"
 
 export const commentReducer = createReducer({
-  [currentComment]: (state, payload) => replaceReduce(state, payload, 'currentComment'),
+  [currentComment]: replaceReduce,
 }, {
   currentComment: {},
 })

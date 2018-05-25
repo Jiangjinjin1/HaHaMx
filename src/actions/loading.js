@@ -4,8 +4,8 @@
 import _ from 'lodash'
 import { createAction } from 'redux-act'
 
-export const loadingQueue = createAction('app/loadingQueue')
-export const disOrEnableLoading = createAction('app/disOrEnableLoading')
+export const loadingQueue = createAction('app/loadingQueue', arg => arg, arg => 'loadingQueue')
+export const disOrEnableLoading = createAction('app/disOrEnableLoading', arg => arg, arg => 'disOrEnableLoading')
 
 export const startLoading = () => (store) => {
   const storeloadingQueue = _.get(store, 'loading.loadingQueue')
