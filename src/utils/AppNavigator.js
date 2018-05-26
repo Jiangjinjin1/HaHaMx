@@ -56,6 +56,9 @@ const HomeNav = createBottomTabNavigator({
     activeTintColor: 'tomato',
     inactiveTintColor: 'gray',
     showLabel: false,
+    style: {
+      backgroundColor: '#ffdc00',
+    }
   }
 })
 
@@ -68,10 +71,10 @@ export const AppNavigator = createStackNavigator({
       let title = ''
       switch (routes[index].routeName){
         case 'Good':
-          title = '最火'
+          title = '推荐'
           break
         case 'New':
-          title = '最新'
+          title = '新鲜'
           break
         case 'Pics':
           title = '趣图'
@@ -88,9 +91,12 @@ export const AppNavigator = createStackNavigator({
       }
       return {
         title,
+        headerStyle: {
+          backgroundColor: '#ffdc00',
+        }
       }
-    }
-  },
+    },
+  }
 }, {
   initialRouteName: 'Home',
 })
