@@ -6,7 +6,8 @@ import {
   createReactNavigationReduxMiddleware,
   createReduxBoundAddListener
 } from "react-navigation-redux-helpers"
-import { finishLoading, startLoading } from "../actions/loading";
+import Toast from 'react-native-root-toast'
+import { finishLoading, startLoading } from "../actions/loading"
 
 const thunkState = ({ dispatch, getState }) => {
   return next => action => {
@@ -43,9 +44,16 @@ function promise({ dispatch }) {
 const errorHandler = ({ dispatch }) => {
   return next => action => {
     if (action instanceof Error) {
-      console.log('action:', action)
       const msg = action.message || ''
       console.log('errorHandler:', msg)
+      Toast.show(msg, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        shadow: true,
+        animation: true,
+        textColor: 'white',
+        backgroundColor: '#D55555',
+      })
       return action
     }
 
