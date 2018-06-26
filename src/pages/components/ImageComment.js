@@ -17,8 +17,8 @@ import { connect } from "react-redux"
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view"
 import Icon from "./Icon"
 import Comment from "./Comment"
-import { getCurrentComment } from "../../actions/commentAction";
-import Spinner from "./Spinner";
+import { commentRefreshState, getCurrentComment } from "../../actions/commentAction"
+import Spinner from "./Spinner"
 
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -63,25 +63,16 @@ class ImageComment extends Component {
   }
 
   onHeaderRefresh() {
-    this.setState({
-      refreshState: RefreshState.HeaderRefreshing
-    })
+    this.props.commentRefreshStateAction(RefreshState.HeaderRefreshing)
     const { currentComment: { jid } } = this.props
     this.props.getCurrentComment({ jid, page: 1 })
   }
 
   onFooterRefresh() {
-    this.setState({
-      refreshState: RefreshState.FooterRefreshing
-    })
+    this.props.commentRefreshStateAction(RefreshState.FooterRefreshing)
     const { currentComment: { page, jid } } = this.props
     this.props.getCurrentComment({
       jid, page: page + 1,
-      callback: (refreshState) => {
-        this.setState({
-          refreshState,
-        })
-      }
     })
   }
 
@@ -90,66 +81,76 @@ class ImageComment extends Component {
     const { displayComment } = this.state
     if (!displayComment) return null
     return (
-      <Animated.View
-        style={{
-          transform: [
-            {
-              translateY: this.animation.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, deviceHeight],
-              }),
-            }],
-          height: deviceHeight * 0.6,
-          width: deviceWidth,
-          backgroundColor: 'white',
-          bottom: this.animation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, -(deviceHeight * 0.4)],
-          }),
-          position: 'absolute',
-          zIndex: 999,
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              height: 40,
-              borderBottomWidth: 1,
-              borderBottomColor: '#DADADA',
-            }}
-          >
-            <Text>{count === 0 ? `暂无评论` : `${count}条评论`}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                this.toggleComment()
-                this.props.resetComment()
-                this.setState({
-                  jid: 0,
-                  comment_num: 0,
-                })
-              }}
+      <View style={{
+        width: deviceWidth,
+        height: deviceHeight,
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        zIndex: 999,
+        top: 0,
+        left: 0,
+      }}>
+        <Animated.View
+          style={{
+            transform: [
+              {
+                translateY: this.animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, deviceHeight],
+                }),
+              }],
+            height: deviceHeight * 0.6,
+            width: deviceWidth,
+            backgroundColor: 'white',
+            bottom: this.animation.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, -(deviceHeight * 0.4)],
+            }),
+            position: 'absolute',
+            zIndex: 999,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <View
               style={{
-                position: 'absolute',
-                right: 20,
-                top: 8,
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                height: 40,
+                borderBottomWidth: 1,
+                borderBottomColor: '#DADADA',
               }}
             >
-              <Icon
-                suite={'EvilIcons'}
-                name={'close'}
-                size={30}
-                color={'#000000'}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ overflow: 'hidden' }}>
-            {
-              (this.state.comment_num > 0 && count === 0) &&
+              <Text>{count === 0 ? `暂无评论` : `${count}条评论`}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this.toggleComment()
+                  this.props.resetComment()
+                  this.setState({
+                    jid: 0,
+                    comment_num: 0,
+                    refreshState: RefreshState.Idle,
+                  })
+                }}
+                style={{
+                  position: 'absolute',
+                  right: 20,
+                  top: 8,
+                }}
+              >
+                <Icon
+                  suite={'EvilIcons'}
+                  name={'close'}
+                  size={30}
+                  color={'#000000'}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={{ overflow: 'hidden' }}>
+              {
+                (this.state.comment_num > 0 && count === 0) &&
                 <View
                   style={{
                     justifyContent: 'center',
@@ -159,65 +160,66 @@ class ImageComment extends Component {
                   }}
                 >
                   <Spinner/>
-                  <Text style={{color: 'black'}}>正在加载……</Text>
+                  <Text style={{ color: 'black' }}>正在加载……</Text>
                 </View>
-            }
-            {
-              !_.isEmpty(comments) && <RefreshListView
-                data={comments}
-                renderItem={({ item }) => {
-                  const newArr = []
-                  let newObj = {}
-                  let floor = 1
-                  _.forEachRight(item, (itemKey, index) => {
-                    if (index === item.length - 1) {
-                      newObj = {
-                        ...itemKey,
-                        floor: floor++,
+              }
+              {
+                !_.isEmpty(comments) && <RefreshListView
+                  data={comments}
+                  renderItem={({ item }) => {
+                    const newArr = []
+                    let newObj = {}
+                    let floor = 1
+                    _.forEachRight(item, (itemKey, index) => {
+                      if (index === item.length - 1) {
+                        newObj = {
+                          ...itemKey,
+                          floor: floor++,
+                        }
                       }
-                    }
-                    if (index > 0) {
-                      newObj = {
-                        ...item[index - 1],
-                        floor: floor++,
-                        childElement: { ...newObj },
+                      if (index > 0) {
+                        newObj = {
+                          ...item[index - 1],
+                          floor: floor++,
+                          childElement: { ...newObj },
+                        }
                       }
-                    }
-                  })
-                  newArr.push(newObj)
-                  return _.map(newArr, (obj) => <Comment {...obj} key={uuid.v4()}/>)
-                }}
-                keyExtractor={() => uuid.v4()}
-                initialNumToRender={10}
-                style={{
-                  height: deviceHeight * 0.6 - 50
-                }}
-                refreshState={this.state.refreshState}
-                onHeaderRefresh={() => this.onHeaderRefresh()}
-                onFooterRefresh={() => this.onFooterRefresh()}
-              />
-            }
+                    })
+                    newArr.push(newObj)
+                    return _.map(newArr, (obj) => <Comment {...obj} key={uuid.v4()}/>)
+                  }}
+                  keyExtractor={() => uuid.v4()}
+                  initialNumToRender={10}
+                  style={{
+                    height: deviceHeight * 0.6 - 50
+                  }}
+                  refreshState={this.props.commentRefreshState}
+                  onHeaderRefresh={() => this.onHeaderRefresh()}
+                  onFooterRefresh={() => this.onFooterRefresh()}
+                />
+              }
+            </View>
           </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
+      </View>
     )
   }
 }
 
 const mapProps = (store) => {
   const {
-    comment: { currentComment = {} },
+    comment: { currentComment = {}, commentRefreshState },
   } = store
   return {
     currentComment,
+    commentRefreshState,
   }
 }
 
-const mapActions = (dispatch) => {
-  return {
-    getCurrentComment: compose(dispatch, getCurrentComment),
-    resetComment: compose(dispatch, () => ({ type: 'reset/comment' })),
-  }
-}
+const mapActions = (dispatch) => ({
+  getCurrentComment: compose(dispatch, getCurrentComment),
+  commentRefreshStateAction: compose(dispatch, commentRefreshState),
+  resetComment: compose(dispatch, () => ({ type: 'reset/comment' })),
+})
 
 export default connect(mapProps, mapActions)(ImageComment)

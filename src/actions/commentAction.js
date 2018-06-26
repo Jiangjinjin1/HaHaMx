@@ -3,15 +3,15 @@
  */
 import _ from 'lodash'
 import { createAction } from 'redux-act'
-import { getCommentList } from "../api/api";
-import { RefreshState } from "react-native-refresh-list-view";
+import { getCommentList } from "../api/api"
+import { RefreshState } from "react-native-refresh-list-view"
 
 export const currentComment = createAction('current comment Data', arg => arg, arg => 'currentComment')
+export const commentRefreshState = createAction('current comment RefreshState', arg => arg, arg => 'commentRefreshState')
 
 export const getCurrentComment = ({
                                     jid,
                                     page = 1,
-                                    callback,
                                   }: {
   jid: string,
   page?: number,
@@ -25,8 +25,7 @@ export const getCurrentComment = ({
     })
 
     if (_.get(result, 'comments', []).length === 0) {
-      callback && callback(RefreshState.NoMoreData)
-      return []
+      return [commentRefreshState(RefreshState.NoMoreData)]
     }
     const mergeData = {
       ...result,
@@ -37,12 +36,10 @@ export const getCurrentComment = ({
       page,
       jid,
     }
-    callback && callback(RefreshState.Idle)
-    return currentComment({
+    return [currentComment({
       ...mergeData,
-    })
+    }), commentRefreshState(RefreshState.Idle)]
   } catch (e) {
-    callback && callback(RefreshState.Failure)
-    return []
+    return [commentRefreshState(RefreshState.Failure)]
   }
 }
