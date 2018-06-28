@@ -122,13 +122,26 @@ class Card extends Component {
                   style={{
                     height: imageContentHeight,
                     overflow: 'hidden',
+                    position: 'relative',
                   }}
                 >
+                  {
+                    this.state.progress !== 1 &&
+                    <View
+                      style={{
+                        height: imageContentHeight,
+                        width: imageWidth,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Progress progress={this.state.progress} showsText
+                                animated={false}/>
+                    </View>
+                  }
                   <ProgressImage
                     style={{ width: imageWidth, height: imageHeight }}
                     source={{ uri: imageUrl }}
-                    indicator={() => <Progress progress={this.state.progress} showsText
-                                               animated={false}/>}
                     onProgress={e => {
                       this.setState({
                         progress: e.nativeEvent.loaded / e.nativeEvent.total
