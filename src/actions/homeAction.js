@@ -4,7 +4,17 @@
 import _ from 'lodash'
 import { createAction } from 'redux-act'
 import { getJokeList } from "../api/api"
-import { RefreshState } from "react-native-refresh-list-view";
+import { RefreshState } from "react-native-refresh-list-view"
+
+
+export const webGoodData = createAction('get Web Good Data', arg => arg, arg => ('webGoodData'))
+export const webGoodDataRefreshState = createAction('get Web Good Data RefreshState', arg => arg, arg => ('webGoodDataRefreshState'))
+export const newData = createAction('get new Data', arg => arg, arg => ('newData'))
+export const newDataRefreshState = createAction('get Web Good Data RefreshState', arg => arg, arg => ('newDataRefreshState'))
+export const picData = createAction('get pic Data', arg => arg, arg => ('picData'))
+export const picDataRefreshState = createAction('get Web Good Data RefreshState', arg => arg, arg => ('picDataRefreshState'))
+export const textData = createAction('get text Data', arg => arg, arg => ('textData'))
+export const textDataRefreshState = createAction('get Web Good Data RefreshState', arg => arg, arg => ('textDataRefreshState'))
 
 const merge = ({
                  oldData,
@@ -18,8 +28,8 @@ const merge = ({
   const oldJoke = _.get(oldData, 'joke', [])
   const newJoke = _.get(newData, 'joke', [])
   const arr = [...oldJoke]
-  !_.isEmpty(newJoke) && _.forEach(newJoke, (item2, index2) => {
-    const findIndex = _.findIndex(oldJoke, { id: item2.id })
+  !_.isEmpty(newJoke) && _.forEachRight(newJoke, (item2, index2) => {
+    const findIndex = _.findIndex(arr, { id: item2.id })
     if (findIndex > -1) {
       arr.splice(findIndex, 1, item2)
     } else {
@@ -28,19 +38,16 @@ const merge = ({
   })
   return {
     page: push ? _.get(newData, 'page', 1) : _.get(oldData, 'page', 1),
-    joke: [...arr]
+    joke: arr,
   }
 }
 
-export const webGoodData = createAction('get Web Good Data', arg => arg, arg => ('webGoodData'))
 
 export const getWebGoodData = ({
                                  page,
-                                 callback,
                                  pullOrPush = 'push',
                                }: {
   page?: number,
-  callback?: () => void,
   pullOrPush?: string,
 }) => async (store) => {
   const data = _.get(store, 'home.webGoodData') || {}
@@ -50,28 +57,23 @@ export const getWebGoodData = ({
     page: page ? page : Number(currentPage) + 1,
   })
   if (_.get(result, 'joke', []).length === 0) {
-    callback && callback(RefreshState.NoMoreData)
-    return []
+    return webGoodDataRefreshState(RefreshState.NoMoreData)
   }
-  callback && callback(RefreshState.Idle)
-  return webGoodData({
+  return [webGoodData({
     ...merge({
       oldData: data,
       newData: result,
       push: pullOrPush === 'push',
     })
-  })
+  }), webGoodDataRefreshState(RefreshState.Idle)]
 }
 
-export const newData = createAction('get new Data')
 
 export const getNewData = ({
                              page,
-                             callback,
                              pullOrPush = 'push',
                            }: {
   page?: number,
-  callback?: () => void,
   pullOrPush?: string,
 }) => async (store) => {
   const data = _.get(store, 'home.newData') || {}
@@ -81,28 +83,23 @@ export const getNewData = ({
     page: page ? page : Number(currentPage) + 1,
   })
   if (_.get(result, 'joke', []).length === 0) {
-    callback && callback(RefreshState.NoMoreData)
-    return []
+    return newDataRefreshState(RefreshState.NoMoreData)
   }
-  callback && callback(RefreshState.Idle)
-  return newData({
+  return [newData({
     ...merge({
       oldData: data,
       newData: result,
       push: pullOrPush === 'push',
     })
-  })
+  }), newDataRefreshState(RefreshState.Idle)]
 }
 
-export const picData = createAction('get pic Data')
 
 export const getPicData = ({
                              page,
-                             callback,
                              pullOrPush = 'push',
                            }: {
   page?: number,
-  callback?: () => void,
   pullOrPush?: string,
 }) => async (store) => {
   const data = _.get(store, 'home.picData') || {}
@@ -112,20 +109,17 @@ export const getPicData = ({
     page: page ? page : Number(currentPage) + 1,
   })
   if (_.get(result, 'joke', []).length === 0) {
-    callback && callback(RefreshState.NoMoreData)
-    return []
+    return picDataRefreshState(RefreshState.NoMoreData)
   }
-  callback && callback(RefreshState.Idle)
-  return picData({
+  return [picData({
     ...merge({
       oldData: data,
       newData: result,
       push: pullOrPush === 'push',
     })
-  })
+  }), picDataRefreshState(RefreshState.Idle)]
 }
 
-export const textData = createAction('get text Data')
 
 export const getTextData = ({
                               page,
@@ -143,16 +137,14 @@ export const getTextData = ({
     page: page ? page : Number(currentPage) + 1,
   })
   if (_.get(result, 'joke', []).length === 0) {
-    callback && callback(RefreshState.NoMoreData)
-    return []
+    return textDataRefreshState(RefreshState.NoMoreData)
   }
-  callback && callback(RefreshState.Idle)
-  return textData({
+  return [textData({
     ...merge({
       oldData: data,
       newData: result,
       push: pullOrPush === 'push',
     })
-  })
+  }), textDataRefreshState(RefreshState.Idle)]
 }
 
