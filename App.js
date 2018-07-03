@@ -12,10 +12,11 @@ import {
 import { Provider } from 'react-redux'
 import createStore from './src/store'
 import AppWithNavigationState from './src/utils/AppNavigator'
-import Loading from "./src/pages/Loading"
-import { checkRnUpdate } from "./src/utils/update"
+// import Loading from "./src/pages/Loading"
+// import { checkRnUpdate } from "./src/utils/update"
 import ImageView from "./src/pages/components/ImageView"
-import ImageComment from "./src/pages/components/ImageComment";
+import ImageComment from "./src/pages/components/ImageComment"
+// import { mkdirFolder } from "./src/utils/FetchBlob"
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -27,13 +28,14 @@ export default class App extends Component<Props> {
   }
 
   componentDidMount() {
+    // mkdirFolder()
     createStore((store) => {
       this.setState({
         store,
       })
     })
     if (!__DEV__) {
-      checkRnUpdate()
+      // checkRnUpdate()
     }
     YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Setting a timer'])
   }
@@ -48,9 +50,9 @@ export default class App extends Component<Props> {
           style={{ flex: 1 }}
         >
           <AppWithNavigationState/>
-          <Loading/>
-          <ImageView  style={{position: 'absolute', zIndex: 99}}/>
-          <ImageComment style={{position: 'absolute', zIndex: 999}}/>
+          <ImageView/>
+          <ImageComment/>
+          {/*<Loading/>*/}
         </View>
       </Provider>
     );
