@@ -4,22 +4,17 @@
 import React, { Component } from 'react'
 import {
   View,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
   DeviceEventEmitter,
-  TouchableWithoutFeedback,
 } from 'react-native'
 import { compose } from "redux"
 import { connect } from "react-redux"
-import ProgressImage, { Progress } from "./ProgressImage"
-import Icon from "./Icon";
-import { doublePress } from "../../utils/common"
-import RightFunButton from "./RightFunButton";
-import ImageComment from "./ImageComment";
+import ImageViewer from 'react-native-image-zoom-viewer'
+import ProgressImage from "./ProgressImage"
+import RightFunButton from "./RightFunButton"
 import { getCurrentComment } from "../../actions/commentAction"
+import { Screen } from "../../utils/constant"
 
-const deviceHeight = Dimensions.get('window').height
+const deviceHeight = Screen.height
 
 class ImageView extends Component {
   constructor() {
@@ -37,8 +32,8 @@ class ImageView extends Component {
     }
   }
 
-  closeImageView(){
-    DeviceEventEmitter.emit('ImageView',{
+  closeImageView() {
+    DeviceEventEmitter.emit('ImageView', {
       visible: false,
     })
     this.props.resetComment()
@@ -70,6 +65,7 @@ class ImageView extends Component {
       deviceWidth,
     } = this.state
     const imageHeight = deviceWidth * height / width
+    const containerHeight = imageHeight > deviceHeight ? imageHeight : deviceHeight
     if (!visible) return null
     return (
       <View
@@ -83,7 +79,6 @@ class ImageView extends Component {
           left: 0,
           justifyContent: 'center',
           alignItems: 'center',
-          elevation: 5,
         }}
       >
         <View
@@ -91,72 +86,43 @@ class ImageView extends Component {
             flex: 1,
             backgroundColor: '#353B46',
             justifyContent: 'center',
+            height: deviceHeight,
           }}
         >
-          <TouchableOpacity
-            onPress={() => this.closeImageView()}
-            style={{
-              position: 'absolute',
-              top: 90,
-              left: 25,
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              zIndex: 99,
-              opacity: 0.5,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon suite={'Entypo'} name={'chevron-with-circle-left'} size={30} color={'#000000'}/>
-          </TouchableOpacity>
-          <ScrollView
+          <View
             style={{
               flex: 1,
+              height: containerHeight,
+              justifyContent: 'center',
+              width: deviceWidth,
             }}
           >
-            <View
-              style={{
-                flex: 1,
-                height: imageHeight > deviceHeight ? imageHeight : deviceHeight,
-                justifyContent: 'center',
-              }}
-            >
-              <TouchableWithoutFeedback
-                onPress={doublePress(() => this.closeImageView())}
-              >
-                <ProgressImage
-                  source={{ uri: imageUrl }}
-                  style={{ width: deviceWidth, height: imageHeight }}
-                  indicator={() => <Progress progress={this.state.progress} showsText
-                                             animated={false}/>}
-                  onProgress={e => {
-                    this.setState({
-                      progress: e.nativeEvent.loaded / e.nativeEvent.total
-                    })
-                  }}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-          </ScrollView>
-          <RightFunButton/>
+            <ImageViewer
+              imageUrls={[{
+                props: {
+                  source: require('./images/xigua.png'),
+                },
+                freeHeight: true,
+                width: deviceWidth,
+                height: imageHeight,
+              }]}
+              renderIndicator={() => null}
+              renderImage={() => <ProgressImage
+                source={{ uri: imageUrl }}
+                style={{ width: deviceWidth, height: imageHeight }}
+              />}
+            />
+          </View>
+          <RightFunButton closeImageView={() => this.closeImageView()}/>
         </View>
       </View>
     )
   }
 }
 
-const mapProps = (store) => {
-  return {
-
-  }
-}
-
-const mapActions = (dispatch) => {
-  return {
-    getCurrentComment: compose(dispatch, getCurrentComment),
-    resetComment: compose(dispatch, () => ({ type: 'reset/comment' })),
-  }
-}
+const mapActions = (dispatch) => ({
+  getCurrentComment: compose(dispatch, getCurrentComment),
+  resetComment: compose(dispatch, () => ({ type: 'reset/comment' })),
+})
 
 export default connect(null, mapActions)(ImageView)
