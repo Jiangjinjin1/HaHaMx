@@ -6,7 +6,6 @@ import {
   Text,
   View,
   Animated,
-  Dimensions,
   TouchableOpacity,
   DeviceEventEmitter,
 } from 'react-native'
@@ -15,13 +14,14 @@ import uuid from 'react-native-uuid'
 import { compose } from "redux"
 import { connect } from "react-redux"
 import RefreshListView, { RefreshState } from "react-native-refresh-list-view"
+import { commentRefreshState, getCurrentComment } from "../../actions/commentAction"
 import Icon from "./Icon"
 import Comment from "./Comment"
-import { commentRefreshState, getCurrentComment } from "../../actions/commentAction"
 import Spinner from "./Spinner"
+import { Screen } from '../../utils/constant'
 
-const deviceWidth = Dimensions.get('window').width
-const deviceHeight = Dimensions.get('window').height
+const deviceWidth = Screen.width
+const deviceHeight = Screen.height
 
 class ImageComment extends Component {
   constructor() {
@@ -31,6 +31,7 @@ class ImageComment extends Component {
       comment_num: 0,
       displayComment: false,
       refreshState: RefreshState.Idle,
+      needReset: true,
     }
     this.animation = new Animated.Value(1)
   }
@@ -78,47 +79,50 @@ class ImageComment extends Component {
 
   render() {
     const { currentComment: { comments = [], count = 0 } } = this.props
-    const { displayComment } = this.state
-    if (!displayComment) return null
     return (
-      <View style={{
-        width: deviceWidth,
-        height: deviceHeight,
-        position: 'absolute',
-        backgroundColor: 'transparent',
-        zIndex: 999,
-        top: 0,
-        left: 0,
-      }}>
-        <Animated.View
+      <Animated.View
+        style={{
+          transform: [
+            {
+              translateY: this.animation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, deviceHeight],
+              }),
+            }],
+          height: deviceHeight,
+          width: deviceWidth,
+          bottom: this.animation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, -deviceHeight],
+          }),
+          position: 'absolute',
+          backgroundColor: 'transparent',
+          zIndex: 999,
+          top: 0,
+          left: 0,
+        }}
+      >
+        <View
           style={{
-            transform: [
-              {
-                translateY: this.animation.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, deviceHeight],
-                }),
-              }],
-            height: deviceHeight * 0.6,
+            flex: 1,
             width: deviceWidth,
-            backgroundColor: 'white',
-            bottom: this.animation.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, -(deviceHeight * 0.4)],
-            }),
-            position: 'absolute',
-            zIndex: 999,
-            borderTopLeftRadius: 15,
-            borderTopRightRadius: 15,
+            backgroundColor: 'rgba(0,0,0, .5)'
           }}
         >
-          <View style={{ flex: 1 }}>
+          <View style={{ height: deviceHeight * 0.2 }}>{}</View>
+          <View
+            style={{
+              height: deviceHeight * 0.8,
+              backgroundColor: 'white',
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15,
+            }}>
             <View
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
-                height: 40,
+                height: 39,
                 borderBottomWidth: 1,
                 borderBottomColor: '#DADADA',
               }}
@@ -127,12 +131,14 @@ class ImageComment extends Component {
               <TouchableOpacity
                 onPress={() => {
                   this.toggleComment()
-                  this.props.resetComment()
-                  this.setState({
-                    jid: 0,
-                    comment_num: 0,
-                    refreshState: RefreshState.Idle,
-                  })
+                  if (this.state.needReset) {
+                    this.props.resetComment()
+                    this.setState({
+                      jid: 0,
+                      comment_num: 0,
+                      refreshState: RefreshState.Idle,
+                    })
+                  }
                 }}
                 style={{
                   position: 'absolute',
@@ -155,7 +161,7 @@ class ImageComment extends Component {
                   style={{
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: deviceHeight * 0.6 - 50,
+                    height: deviceHeight * 0.8 - 40,
                     width: deviceWidth,
                   }}
                 >
@@ -191,7 +197,7 @@ class ImageComment extends Component {
                   keyExtractor={() => uuid.v4()}
                   initialNumToRender={10}
                   style={{
-                    height: deviceHeight * 0.6 - 50
+                    height: deviceHeight * 0.8 - 40
                   }}
                   refreshState={this.props.commentRefreshState}
                   onHeaderRefresh={() => this.onHeaderRefresh()}
@@ -200,8 +206,8 @@ class ImageComment extends Component {
               }
             </View>
           </View>
-        </Animated.View>
-      </View>
+        </View>
+      </Animated.View>
     )
   }
 }
