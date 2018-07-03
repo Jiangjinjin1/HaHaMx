@@ -91,4 +91,4 @@ export const getImageUrl = ({
                               loadImg,
                               path,
                               name,
-                            }) => loadImg ? `https://image.haha.mx/${path}/big/${name}` : `https://image.haha.mx/${path}/small/${name}`
+                            }) => loadImg ? `https://image.haha.mx/${path}big/${name}` : `https://image.haha.mx/${path}small/${name}`
