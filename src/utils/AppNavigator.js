@@ -93,10 +93,11 @@ export const AppNavigator = createStackNavigator({
         title,
         headerStyle: {
           backgroundColor: '#ffdc00',
+          height: 40,
         }
       }
     },
-  }
+  },
 }, {
   initialRouteName: 'Home',
 })
