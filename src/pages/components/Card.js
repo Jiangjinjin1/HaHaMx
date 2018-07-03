@@ -6,7 +6,6 @@ import {
   View,
   Text,
   Image,
-  Dimensions,
   DeviceEventEmitter,
   TouchableWithoutFeedback,
 } from 'react-native'
@@ -17,8 +16,9 @@ import ImageView from "./ImageView";
 import CardFoot from "./CardFoot";
 import { getImageUrl, replaceBr } from "../../utils/common";
 import { use4G } from "../../actions/settingAction";
+import { Screen } from "../../utils/constant"
 
-const deviceWidth = Dimensions.get('window').width
+const deviceWidth = Screen.width
 
 class Card extends Component {
   constructor(props) {
@@ -58,6 +58,7 @@ class Card extends Component {
     const imageHeight = height * imageWidth / width
     const imageContentHeight = imageHeight > 300 ? 300 : imageHeight
     const imageUrl = getImageUrl({ loadImg, path, name })
+    const displayProgress = this.state.progress !== 1 && this.state.progress !== 0
     return (
       <View
         style={[{
@@ -126,7 +127,7 @@ class Card extends Component {
                   }}
                 >
                   {
-                    this.state.progress !== 1 &&
+                    displayProgress &&
                     <View
                       style={{
                         height: imageContentHeight,
@@ -160,7 +161,7 @@ class Card extends Component {
                       top: imageHeight > 300 ? 270 : imageHeight - 30,
                       width: imageWidth,
                     }}>
-                      <Text style={{ color: 'white' }}>点击查看全图</Text>
+                      <Text style={{ color: 'white' }}>{loadImg ? '点击查看全图' : '点击加载原图'}</Text>
                     </View>
                   }
                 </View>
