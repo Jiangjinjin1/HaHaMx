@@ -9,55 +9,34 @@ import {
 import _ from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
-import { getNewData } from "../../actions/homeAction";
-import Card from "../components/Card";
-import { normalPress } from "../../utils/common";
+import RefreshListView, { RefreshState } from "react-native-refresh-list-view"
+import { getNewData, newDataRefreshState } from "../../actions/homeAction"
+import Card from "../components/Card"
 
 class NewPage extends Component {
   constructor() {
-    super();
-    this.state = {
-      refreshState: RefreshState.Idle,
-    };
-  }
-
-  state: {
-    refreshState: number,
+    super()
   }
 
   componentDidMount() {
+    this.props.changeRefreshState(RefreshState.HeaderRefreshing)
     this.props.getNewData({
       page: 1,
+      pullOrPush: 'pull',
     })
   }
 
   onHeaderRefresh() {
-    this.setState({
-      refreshState: RefreshState.HeaderRefreshing
-    })
+    this.props.changeRefreshState(RefreshState.HeaderRefreshing)
     this.props.getNewData({
       page: 1,
       pullOrPush: 'pull',
-      callback: (refreshState) => {
-        this.setState({
-          refreshState,
-        })
-      }
     })
   }
 
   onFooterRefresh() {
-    this.setState({
-      refreshState: RefreshState.FooterRefreshing
-    })
-    this.props.getNewData({
-      callback: (refreshState) => {
-        this.setState({
-          refreshState,
-        })
-      }
-    })
+    this.props.changeRefreshState(RefreshState.FooterRefreshing)
+    this.this.props.getNewData({})
   }
 
   withoutData() {
@@ -70,14 +49,14 @@ class NewPage extends Component {
   }
 
   hasData() {
-    const { newData: { joke = [] } } = this.props
+    const { newData: { joke = [] }, newDataRefreshState } = this.props
     return (
       <View style={{ flex: 1 }}>
         <RefreshListView
           data={joke}
           renderItem={({ item }) => <Card data={item}/>}
           keyExtractor={(item) => String(item.id)}
-          refreshState={this.state.refreshState}
+          refreshState={newDataRefreshState}
           initialNumToRender={3}
           onHeaderRefresh={() => this.onHeaderRefresh()}
           onFooterRefresh={() => this.onFooterRefresh()}
@@ -92,16 +71,16 @@ class NewPage extends Component {
 }
 
 const mapProps = (store) => {
-  const { home: { newData } } = store
+  const { home: { newData, newDataRefreshState } } = store
   return {
     newData,
+    newDataRefreshState,
   }
 }
 
-const mapActions = (dispatch) => {
-  return {
-    getNewData: compose(dispatch, normalPress(getNewData))
-  }
-}
+const mapActions = (dispatch) => ({
+  getNewData: compose(dispatch, getNewData),
+  changeRefreshState: compose(dispatch, newDataRefreshState),
+})
 
 export default connect(mapProps, mapActions)(NewPage)

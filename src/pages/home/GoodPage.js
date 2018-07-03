@@ -9,55 +9,34 @@ import {
 import _ from 'lodash'
 import { compose } from "redux"
 import { connect } from 'react-redux'
-import RefreshListView, { RefreshState } from "react-native-refresh-list-view";
-import { getWebGoodData } from "../../actions/homeAction";
-import Card from "../components/Card";
-import { normalPress } from "../../utils/common";
+import RefreshListView, { RefreshState } from "react-native-refresh-list-view"
+import { getWebGoodData, webGoodDataRefreshState } from "../../actions/homeAction"
+import Card from "../components/Card"
 
 class GoodPage extends Component {
   constructor() {
-    super();
-    this.state = {
-      refreshState: RefreshState.Idle,
-    };
-  }
-
-  state: {
-    refreshState: number,
+    super()
   }
 
   componentDidMount() {
+    this.props.changeRefreshState(RefreshState.HeaderRefreshing)
     this.props.getJokeData({
       page: 1,
+      pullOrPush: 'pull',
     })
   }
 
   onHeaderRefresh() {
-    this.setState({
-      refreshState: RefreshState.HeaderRefreshing
-    })
+    this.props.changeRefreshState(RefreshState.HeaderRefreshing)
     this.props.getJokeData({
       page: 1,
       pullOrPush: 'pull',
-      callback: (refreshState) => {
-        this.setState({
-          refreshState,
-        })
-      }
     })
   }
 
   onFooterRefresh() {
-    this.setState({
-      refreshState: RefreshState.FooterRefreshing
-    })
-    this.props.getJokeData({
-      callback: (refreshState) => {
-        this.setState({
-          refreshState,
-        })
-      }
-    })
+    this.props.changeRefreshState(RefreshState.FooterRefreshing)
+    this.props.getJokeData({})
   }
 
   withoutData() {
@@ -70,14 +49,14 @@ class GoodPage extends Component {
   }
 
   hasData() {
-    const { webGoodData: { joke = [] } } = this.props
+    const { webGoodData: { joke = [] }, webGoodDataRefreshState } = this.props
     return (
       <View style={{ flex: 1 }}>
         <RefreshListView
           data={joke}
           renderItem={({ item }) => <Card data={item}/>}
           keyExtractor={(item) => String(item.id)}
-          refreshState={this.state.refreshState}
+          refreshState={webGoodDataRefreshState}
           initialNumToRender={3}
           onHeaderRefresh={() => this.onHeaderRefresh()}
           onFooterRefresh={() => this.onFooterRefresh()}
@@ -92,15 +71,17 @@ class GoodPage extends Component {
 }
 
 const mapProps = (store) => {
-  const { home: { webGoodData } } = store
+  const { home: { webGoodData, webGoodDataRefreshState } } = store
   return {
     webGoodData,
+    webGoodDataRefreshState,
   }
 }
 
 const mapActions = (dispatch) => {
   return {
-    getJokeData: compose(dispatch, normalPress(getWebGoodData))
+    getJokeData: compose(dispatch, getWebGoodData),
+    changeRefreshState: compose(dispatch, webGoodDataRefreshState),
   }
 }
 
