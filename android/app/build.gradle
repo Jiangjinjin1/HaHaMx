@@ -145,12 +145,13 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-update')
     compile project(':react-native-fast-image')
+    compile project(':react-native-update')
     compile project(':react-native-vector-icons')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.facebook.react:react-native:+'
+    compile 'com.pgyersdk:sdk:3.0.0'
     // From node_modules
 }
 
