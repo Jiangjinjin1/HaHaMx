@@ -22,7 +22,7 @@ export default (onComplete) => {
   const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['nav', 'home', 'deviceInfo', 'setting'],
+    whitelist: ['nav', 'setting'],
   }
 
   const persistedReducer = persistReducer(persistConfig, reducer)
