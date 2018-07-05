@@ -133,7 +133,10 @@ class Card extends Component {
                         height: imageContentHeight,
                         width: imageWidth,
                         justifyContent: 'center',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        position: 'absolute',
+                        zIndex: 9,
+                        backgroundColor: 'white'
                       }}
                     >
                       <Progress progress={this.state.progress} showsText
